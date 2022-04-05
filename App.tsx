@@ -17,6 +17,7 @@ import {
   Poppins_500Medium,
   Poppins_700Bold
 } from '@expo-google-fonts/poppins';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 export default function App() {
@@ -31,16 +32,18 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        <StatusBar barStyle="light-content"/>
+    <GestureHandlerRootView style={{ flex:1}}>
+      <ThemeProvider theme={theme}>
+        <NavigationContainer>
+          <StatusBar barStyle="light-content"/>
 
-        <AuthProvider>
-          <SignIn />
-        </AuthProvider>
+          <AuthProvider>
+            <SignIn />
+          </AuthProvider>
 
-      </NavigationContainer>
-    </ThemeProvider>
+        </NavigationContainer>
+      </ThemeProvider>
+    </GestureHandlerRootView>
 
   )
 }
