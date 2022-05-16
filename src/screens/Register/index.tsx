@@ -104,7 +104,7 @@ export function Register(){
                 name: 'categoria'
             });
 
-            navigation.navigate("Listagem");
+            navigation.navigate('Listagem');
             
         } catch(error) {
             console.log(error);
