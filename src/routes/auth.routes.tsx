@@ -10,6 +10,9 @@ export function AuthRoutes(){
         <Navigator>
             <Screen 
                 name="SignIn"
+                options={{
+                    headerShown: false
+                }}
                 component={SignIn}
             />
         </Navigator>
