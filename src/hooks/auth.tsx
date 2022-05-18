@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 
 const { CLIENT_ID } = process.env;
 const { REDIRECT_URI } = process.env;
@@ -23,6 +23,8 @@ interface AuthContextData {
     user: User;
     signInWithGoogle(): Promise<void>;
     signInWithApple(): Promise<void>;
+    signOut(): Promise<void>;
+    userStorageLoading: boolean;
 }
 
 interface AuthorizationRespone {
@@ -38,6 +40,7 @@ const AuthContext = createContext({} as AuthContextData);
 
 function AuthProvider({children}: AuthProviderProps){
     const [user, setUser] = useState<User>({} as User);
+    const [userStorageLoading, setUserStorageLoading] = useState(true);
 
     async function signInWithGoogle() {
         try {
@@ -80,10 +83,14 @@ function AuthProvider({children}: AuthProviderProps){
           })
     
           if (credential) {
+            const name = credential.fullName!.givenName!;
+            const photo = `https://ui-avatars.com/api/?name=${name}&length=1`
+
             const userLogged = {
               id: String(credential.user),
               email: credential.email!,
-              name: credential.fullName!.givenName!,
+              name,
+              photo,
             }
     
             setUser(userLogged);
@@ -93,11 +100,34 @@ function AuthProvider({children}: AuthProviderProps){
         }
       }
 
+    async function signOut(){
+      setUser({} as User);
+
+      await AsyncStorage.removeItem(userStorageKey);
+    }      
+
+    useEffect(() => {
+      async function loadUserStorageData() {
+        const userStoraged = await AsyncStorage.getItem(userStorageKey);
+
+        if (userStoraged){
+          const userLogged = JSON.parse(userStoraged) as User;
+          setUser(userLogged);
+        }
+        
+        setUserStorageLoading(false);
+      }
+
+      loadUserStorageData();
+    },[]);
+
     return (
         <AuthContext.Provider value={{ 
             user,
             signInWithGoogle,
-            signInWithApple
+            signInWithApple,
+            signOut,
+            userStorageLoading
             }}>
           {children}
         </AuthContext.Provider>

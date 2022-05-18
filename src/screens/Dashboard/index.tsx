@@ -22,6 +22,7 @@ import {
    LogoutButton,
    
 } from './styles';
+import { useAuth } from '../../hooks/auth';
 
 export interface DataListProps extends TransactionCardProps {
   id: string;
@@ -43,8 +44,10 @@ export function Dashboard(){
   const [transactions, setTransactions] = useState<DataListProps[]>([]);
   const [highlightData, setHighlightData] = useState<HighlightData>({} as HighlightData);
 
+  const {signOut, user} = useAuth();
+
   async function loadTransactions() {
-    const dataKey = '@gofinances:transactions';
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
     const response = await AsyncStorage.getItem(dataKey);
     const transactions = response ? JSON.parse(response) : [];
 
@@ -160,15 +163,15 @@ export function Dashboard(){
           <UserWrapper>
             <UserInfo>
               <Photo 
-                source={{uri: 'https://cf.shopee.com.br/file/75b35a57f4cbe92a73a0d091f6e38ff0_tn' }}
+                source={{uri: user.photo }}
               />
               <User>
                 <UserGreeting>Olá, </UserGreeting>
-                <UserName>Parte do login em manutenção...</UserName>
+                <UserName>{user.name}</UserName>
               </User>
             </UserInfo>
 
-            <LogoutButton onPress={() => {}}>
+            <LogoutButton onPress={signOut}>
               <Icon name="power"/>
             </LogoutButton>
           </UserWrapper>
