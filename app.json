@@ -6,7 +6,10 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.gabriel.azevedo.gofinances"
+    }
   },
   "cli": {
     "version": ">= 0.48.2"
